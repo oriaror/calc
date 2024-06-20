@@ -1,62 +1,65 @@
-let a = '';
-let b = '';
-let sign = '';
-let finish = false;
+const output = document.getElementById("output");
+const form = document.getElementById("calc_form");
+const operand_btns = document.querySelectorAll(".operand");
+const operator_btns = document.querySelectorAll(".operator");
 
-let result = document.querySelector('#result')
-const buttons = document.querySelectorAll('.button')
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+});
 
+let is_operator = false;
+let equation = [];
 
-let nums = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
-let operation = ['+', '-', 'X', '/']
+const remove_active = () => {
+  operator_btns.forEach((btn) => {
+    btn.classList.remove("active");
+  });
+};
 
-buttons.forEach(item => {
-  item.addEventListener('click', (event) => {
-    const key = event.currentTarget.innerText
-    if (nums.includes(key)) {
-      if (b === '' && sign === '') {
-        a += key
-        result.innerHTML = a
-      }
-      else {
-        b += key
-        result.innerHTML = b
-      }
+operand_btns.forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    remove_active();
+    if (output.value == "0") {
+      output.value = e.target.value;
+    } else if (is_operator) {
+      is_operator = false;
+      output.value = e.target.value;
+		} else if (output.value.includes(".")) {
+      output.value = output.value + "" + e.target.value.replace(".", "");
+    } else {
+      output.value = output.value + "" + e.target.value;
     }
-    if (operation.includes(key)) {
-      sign = key
-      console.log(sign)
-    }
-    if (key === '=') {
-      a = calc(a, b, sign)
-      b = ''
-      sign = ''
-      result.innerHTML = a;
-      finish = true;
-      return
-    }
-    if (key === 'AC') {
-      a = ''
-      b = ''
-      sign = ''
-      result.innerHTML = 0;
-      return
-    }
-  })
-})
+  });
+});
 
-function calc(a, b, sign) {
-  if (a && b && sign === '+') {
-    a = (+a) + (+b)
-  }
-  if (a && b && sign === '-') {
-    a = (+a) - (+b)
-  }
-  if (a && b && sign === 'X') {
-    a = (+a) * (+b)
-  }
-  if (a && b && sign === '/') {
-    a = (+a) / (+b)
-  }
-  return a
-}
+operator_btns.forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    remove_active();
+    e.currentTarget.classList.add("active");
+
+    switch (e.target.value) {
+      case "%":
+        output.value = parseFloat(output.value) / 100;
+        break;
+      case "invert":
+        output.value = parseFloat(output.value) * -1;
+        break;
+      case "=":
+        equation.push(output.value);
+        output.value = eval(equation.join(""));
+        equation = [];
+        break;
+      default:
+        let last_item = equation[equation.length - 1];
+        if (["/", "*", "+", "-"].includes(last_item) && is_operator) {
+          equation.pop();
+          equation.push(e.target.value);
+        } else {
+          equation.push(output.value);
+          equation.push(e.target.value);
+        }
+        is_operator = true;
+        break;
+    }
+  });
+});
