@@ -6,6 +6,13 @@
   font-family: inherit;
 }
 
+#calc_form {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  flex-direction: column;
+}
+
 body {
   background-color: #333333;
   display: flex;
@@ -37,11 +44,24 @@ input[type="text"] {
 .wrapper {
   border: 2px solid #ededed;
   border-radius: 50px;
-  width: 100%;
   max-width: 280px;
   background-color: #000000;
   padding: 2rem 1rem;
 }
+
+
+@media (max-width: 255px) {
+  .wrapper{
+    transform: scale(0.6);
+  }
+}
+
+@media (max-height: 625px) {
+  .wrapper{
+    transform: scale(0.7);
+  }
+}
+
 
 .calc_header {
   margin-top: 90px;
@@ -70,6 +90,8 @@ input[type="text"] {
   border-radius: 50%;
   width: 60px;
   height: 60px;
+  min-width: 35px;
+  min-height: 35px;
   color: #ffffff;
   font-size: 20px;
   transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
